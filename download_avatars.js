@@ -15,17 +15,18 @@ function getRepoContributors(repoOwner, repoName, cb) {
   };
 
   request(options, function(err, res, body) {
-  //  var obj = JSON.parse(body);
     cb(err,body);
   });
 }
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+var repoOwner = process.argv[2];
+var repoName = process.argv[3];
+
+getRepoContributors(repoOwner, repoName, function(err, result) {
   if (err) {
     console.log('Error: ', err);
   }
 
-  console.log(result);
   for (i in result) {
     var url = result[i]['avatar_url'];
     var filePath = './avatars/' + result[i]['login'] + '.jpg';
