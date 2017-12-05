@@ -1,12 +1,15 @@
+var fs = require('fs');
 var request = require('request');
 var token = require('./secrets.js');
 
+var repoOwner = process.argv[2];
+var repoName = process.argv[3];
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
 function getRepoContributors(repoOwner, repoName, cb) {
   var options = {
-    url : 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors',
+    url: 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors',
     json: true,
     headers: {
       'User-agent': 'request',
@@ -15,12 +18,19 @@ function getRepoContributors(repoOwner, repoName, cb) {
   };
 
   request(options, function(err, res, body) {
-    cb(err,body);
+    cb(err, body);
   });
 }
 
-var repoOwner = process.argv[2];
-var repoName = process.argv[3];
+function downloadImageByURL(url, filePath) {
+
+  request.get(url)
+    .on('error', function (err) {
+      throw err;
+    })
+    .pipe(fs.createWriteStream(filePath));
+}
+
 
 getRepoContributors(repoOwner, repoName, function(err, result) {
   if (err) {
@@ -39,13 +49,3 @@ getRepoContributors(repoOwner, repoName, function(err, result) {
   }
 
 });
-
-function downloadImageByURL(url, filePath) {
-  var fs = require('fs');
-
-  request.get(url)
-    .on('error', function (err) {
-      throw err;
-    })
-    .pipe(fs.createWriteStream(filePath));
-}
