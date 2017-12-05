@@ -25,8 +25,21 @@ getRepoContributors("jquery", "jquery", function(err, result) {
     console.log('Error: ', err);
   }
 
+  console.log(result);
   for (i in result) {
-    console.log('avatar_url: ' + result[i]['avatar_url']);
+    var url = result[i]['avatar_url'];
+    var filePath = './avatars/' + result[i]['login'] + '.jpg';
+    downloadImageByURL(url, filePath);
   }
 
 });
+
+function downloadImageByURL(url, filePath) {
+  var fs = require('fs');
+
+  request.get(url)
+    .on('error', function (err) {
+      throw err;
+    })
+    .pipe(fs.createWriteStream(filePath));
+}
