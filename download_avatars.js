@@ -27,6 +27,11 @@ getRepoContributors(repoOwner, repoName, function(err, result) {
     console.log('Error: ', err);
   }
 
+  if (repoOwner === undefined || repoName === undefined) {
+    console.log("Error: Please specify both arguments!");
+    return false;
+  }
+
   for (i in result) {
     var url = result[i]['avatar_url'];
     var filePath = './avatars/' + result[i]['login'] + '.jpg';
